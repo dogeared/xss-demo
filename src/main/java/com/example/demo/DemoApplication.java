@@ -17,6 +17,9 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
+    // This will NOT get caught by snyk code
+    // I suspect this has something to with HttpServletResponse being moved to the
+    // jakarta.servlet.http package
     @GetMapping("/xss")
     public void xss(@RequestParam String param, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
@@ -26,6 +29,9 @@ public class DemoApplication {
     }
 
 
+    // This WILL get caught by snyk code
+    // It uses a fake wrapper around HttpServletResponse
+    // in the old package location - javax.servlet.http
     @GetMapping("/old-xss")
     public void oldXss(@RequestParam String param, HttpServletResponse response) throws IOException {
         javax.servlet.http.HttpServletResponse newResponse =
